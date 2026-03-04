@@ -17,12 +17,15 @@ with open("results/scan.csv", newline="") as f:
 # 1) size scaling: base vs numba (np=1)
 base=[x for x in rows if x["method"]=="base" and x["np"]==1]
 numba=[x for x in rows if x["method"].startswith("numba") and x["np"]==1]
+numpyv=[x for x in rows if x["method"].startswith("numpy") and x["np"]==1]
 base.sort(key=lambda x:x["size"])
 numba.sort(key=lambda x:x["size"])
+numpyv.sort(key=lambda x:x["size"])
 
 plt.figure()
 plt.plot([x["size"] for x in base], [x["wall_time_s"] for x in base], marker="o", label="base")
 plt.plot([x["size"] for x in numba], [x["wall_time_s"] for x in numba], marker="o", label="numba(one_energy njit)")
+plt.plot([x["size"] for x in numpyv], [x["wall_time_s"] for x in numpyv], marker="o", label="numpy(vec get_order+all_energy)")
 plt.xlabel("Size (L)")
 plt.ylabel("Wall time (s)")
 plt.title("Size scaling (steps fixed)")
