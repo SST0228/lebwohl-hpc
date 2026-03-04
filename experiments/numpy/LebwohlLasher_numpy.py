@@ -164,20 +164,23 @@ def one_energy(arr,ix,iy,nmax):
 #=======================================================================
 def all_energy(arr,nmax):
     """
-    Arguments:
-	  arr (float(nmax,nmax)) = array that contains lattice data;
-      nmax (int) = side length of square lattice.
-    Description:
-      Function to compute the energy of the entire lattice. Output
-      is in reduced units (U/epsilon).
-	Returns:
-	  enall (float) = reduced energy of lattice.
+    Vectorized lattice energy matching one_energy() definition.
+    Computes sum over all sites of 4-neighbour contributions (same double-counting as baseline all_energy).
     """
-    enall = 0.0
-    for i in range(nmax):
-        for j in range(nmax):
-            enall += one_energy(arr,i,j,nmax)
-    return enall
+    a = arr
+    # Neighbours with periodic boundaries
+    right = np.roll(a, -1, axis=0)
+    left  = np.roll(a,  1, axis=0)
+    up    = np.roll(a, -1, axis=1)
+    down  = np.roll(a,  1, axis=1)
+
+    def pair_energy(dang):
+        c = np.cos(dang)
+        return 0.5*(1.0 - 3.0*(c*c))
+
+    en = pair_energy(a - right) + pair_energy(a - left) + pair_energy(a - up) + pair_energy(a - down)
+    return float(np.sum(en))
+
 #=======================================================================
 def get_order(arr,nmax):
     """
