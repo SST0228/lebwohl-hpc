@@ -9,3 +9,9 @@ build/
 dist/
 *.egg-info/
 .venv/
+
+# keep plots for report
+!figures/*.png
+
+# ignore generated output logs
+LL-Output-*.txt
