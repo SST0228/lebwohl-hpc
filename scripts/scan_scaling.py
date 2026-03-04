@@ -50,9 +50,9 @@ def run_mpi(np_, steps, size, temp, plotflag, seed=123):
 
 def main():
     pathlib.Path("results").mkdir(exist_ok=True)
-    outcsv = pathlib.Path("results/scan.csv")
-    new = not outcsv.exists()
-    with outcsv.open("a", newline="") as f:
+    outcsv = pathlib.Path("results/scan_latest.csv")
+    new = True
+    with outcsv.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["method","np","steps","size","temp","order","reported_time_s","wall_time_s"])
         if new:
             w.writeheader()
