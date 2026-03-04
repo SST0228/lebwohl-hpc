@@ -33,6 +33,12 @@ def run_numba(steps, size, temp, plotflag, warmup=True):
     steps,size,temp,order,rep_t = parse_out(out)
     return {"method":"numba(one_energy_njit)","np":1,"steps":steps,"size":size,"temp":temp,"order":order,"reported_time_s":rep_t,"wall_time_s":wall}
 
+def run_numpy(steps, size, temp, plotflag):
+    out, wall = run_cmd(["python","experiments/numpy/LebwohlLasher_numpy.py",str(steps),str(size),str(temp),str(plotflag)])
+    steps,size,temp,order,rep_t = parse_out(out)
+    return {"method":"numpy(get_order_vec)","np":1,"steps":steps,"size":size,"temp":temp,"order":order,"reported_time_s":rep_t,"wall_time_s":wall}
+
+
 def run_mpi(np_, steps, size, temp, plotflag, seed=123):
     # MPI script prints aggregated line; we benchmark wall time only
     cmd = ["mpirun","-np",str(np_),"python","experiments/mpi/LebwohlLasher_mpi.py",str(steps),str(size),str(temp),str(plotflag),str(seed)]
@@ -60,6 +66,7 @@ def main():
         for L in sizes:
             w.writerow(run_base(steps, L, temp, plotflag))
             w.writerow(run_numba(steps, L, temp, plotflag, warmup=True))
+            w.writerow(run_numpy(steps, L, temp, plotflag))
 
         # mpi scaling at one representative size
         L = 50
